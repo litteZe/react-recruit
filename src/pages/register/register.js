@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
-import Logo from '@/components/logo/logo';
-import {List, InputItem, Radio, WhiteSpace, Button} from 'antd-mobile';
+import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
+import {List, InputItem, Radio, WhiteSpace, Button} from 'antd-mobile';
+import Logo from '@/components/logo/logo';
 import {register} from '@/redux/user.redux';
-import './register.css';
 const {RadioItem} = Radio;
 
 @connect(state => state.user, {register})
-class Register extends Component {
+export default class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -28,6 +28,9 @@ class Register extends Component {
     render() {
         return (
             <div>
+                {this.props.redirectTo
+                    ? <Redirect to={this.props.redirectTo}></Redirect>
+                    : null}
                 <Logo></Logo>
                 {this.props.msg
                     ? <p className="error-msg">{this.props.msg}</p>
@@ -53,5 +56,3 @@ class Register extends Component {
         );
     }
 }
-
-export default Register;

@@ -11,6 +11,7 @@ import registerServiceWorker from './registerServiceWorker';
 import Login from '@/pages/login/login';
 import Register from '@/pages/register/register';
 import AuthRoute from '@/components/auth-route/auth-route';
+import './index.css';
 const store = createStore(reducers, composeWithDevTools(applyMiddleware(thunk)));
 
 function Boss() {
