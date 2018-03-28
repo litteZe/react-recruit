@@ -11,8 +11,15 @@ const _filter = {
 };
 
 Router.get('/list', (req, res) => {
-    User.find({}, (err, doc) => {
-        return res.json(doc);
+    const {
+        type = 'genius'
+    } = req.query;
+    User.find({
+        type
+    }, (err, doc) => {
+        if (err) 
+            return res.json({code: 1, msg: '后端出错'});
+        return res.json({code: 0, data: doc});
     });
 });
 
