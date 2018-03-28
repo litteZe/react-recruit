@@ -3,7 +3,7 @@ import axios from 'axios';
 const USER_LIST = 'USER_LIST';
 
 const initState = {
-    userList: []
+    userlist: []
 };
 // 同步action
 function userList(data) {

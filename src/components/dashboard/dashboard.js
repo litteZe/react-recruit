@@ -5,14 +5,12 @@ import {NavBar} from 'antd-mobile';
 import NavLinkBar from '@/components/nav-link-bar/nav-link-bar';
 import BOSS from '@/components/boss/boss';
 import Genius from '@/components/genius/genius';
+import Profile from '@/components/profile/profile';
 
 function Msg() {
     return <h1>消息</h1>
 }
 
-function Profile() {
-    return <h1>个人中心</h1>
-}
 
 @connect(state => state)
 export default class Dashboard extends Component {

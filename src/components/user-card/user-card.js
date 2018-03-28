@@ -16,7 +16,7 @@ export default class UserCard extends Component {
                     .props
                     .userlist
                     .map(v => (v.avatar
-                        ? <div><WhiteSpace size={'sm'}/><Card key={v.user}>
+                        ? <div key={v.user}><WhiteSpace size={'sm'}/><Card>
                                 <Card.Header
                                     title={v.user}
                                     thumb={require(`../images/${v.avatar}.png`)}
