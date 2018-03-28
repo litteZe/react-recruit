@@ -2,14 +2,15 @@ import {Component} from 'react';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import axios from 'axios';
-import {loadData} from '../../redux/user.redux';
+import {loadData} from '@/redux/user.redux';
 
 @withRouter
 @connect(null, {loadData})
 export default class AuthRoute extends Component {
     componentDidMount() {
-        const publicList = ['/login', 'register'];
+        const publicList = ['/login', '/register'];
         const {pathname} = this.props.location;
+        //在登录和注册页不校验
         if (publicList.includes(pathname)) {
             return null;
         }

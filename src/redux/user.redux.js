@@ -1,34 +1,23 @@
 import axios from 'axios';
-import {getRedirectPath} from '../util';
-const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
-const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+import {getRedirectPath} from '@/util';
+const AUTH_SUCCESS = 'AUTH_SUCCESS';
 const LOAD_DATA = 'LOAD_DATA';
 const ERROR_MSG = 'ERROR_MSG';
 
 const initeState = {
     redirectTo: '',
     msg: '',
-    isAuth: false,
     user: '',
     type: 'genius'
 };
 
 export function user(state = initeState, action) {
     switch (action.type) {
-        case REGISTER_SUCCESS:
+        case AUTH_SUCCESS:
             return {
                 ...state,
                 msg: '',
                 redirectTo: getRedirectPath(action.payload),
-                isAuth: true,
-                ...action.payload
-            };
-        case LOGIN_SUCCESS:
-            return {
-                ...state,
-                msg: '',
-                redirectTo: getRedirectPath(action.payload),
-                isAuth: true,
                 ...action.payload
             };
         case LOAD_DATA:
@@ -46,11 +35,12 @@ export function user(state = initeState, action) {
             return state;
     }
 }
-function registerSuccess(data) {
-    return {type: REGISTER_SUCCESS, payload: data};
-}
-function loginSuccess(data) {
-    return {type: LOGIN_SUCCESS, payload: data};
+function authSucess(obj) {
+    const {
+        pwd,
+        ...data
+    } = obj;
+    return {type: AUTH_SUCCESS, payload: data};
 }
 function errorMsg(msg) {
     return {msg, type: ERROR_MSG};
@@ -59,19 +49,13 @@ export function loadData(userInfo) {
     return {type: LOAD_DATA, payload: userInfo};
 }
 
-export function register({user, pwd, repeatpwd, type}) {
-    if (!user || !pwd || !type) {
-        return errorMsg('用户名或者密码必须输入');
-    }
-    if (pwd !== repeatpwd) {
-        return errorMsg('两次输入密码不一致');
-    }
+export function update(data) {
     return dispath => {
         axios
-            .post('/user/register', {user, pwd, type})
+            .post('/user/update', data)
             .then(res => {
                 if (res.status === 200 & res.data.code === 0) {
-                    dispath(registerSuccess({user, pwd, type}));
+                    dispath(authSucess(res.data.data));
                 } else {
                     dispath(errorMsg(res.data.msg));
                 }
@@ -88,7 +72,27 @@ export function login({user, pwd}) {
             .post('/user/login', {user, pwd})
             .then(res => {
                 if (res.status === 200 & res.data.code === 0) {
-                    dispath(loginSuccess({user, pwd, type: res.data.data.type}));
+                    dispath(authSucess(res.data.data));
+                } else {
+                    dispath(errorMsg(res.data.msg));
+                }
+            });
+    }
+}
+
+export function register({user, pwd, repeatpwd, type}) {
+    if (!user || !pwd || !type) {
+        return errorMsg('用户名或者密码必须输入');
+    }
+    if (pwd !== repeatpwd) {
+        return errorMsg('两次输入密码不一致');
+    }
+    return dispath => {
+        axios
+            .post('/user/register', {user, pwd, type})
+            .then(res => {
+                if (res.status === 200 & res.data.code === 0) {
+                    dispath(authSucess({user, pwd, type}));
                 } else {
                     dispath(errorMsg(res.data.msg));
                 }

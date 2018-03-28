@@ -58,6 +58,21 @@ Router.post('/register', (req, res) => {
     });
 });
 
+Router.post('/update', (req, res) => {
+    const {userid} = req.cookies;
+    if (!userid) {
+        return res.json({code: 1});
+    }
+    User.findByIdAndUpdate(userid, req.body, (err, doc) => {
+        const data = {
+            ...req.body,
+            user: doc.user,
+            type: doc.type
+        };
+        return res.json({code: 0, data});
+    });
+});
+
 Router.get('/info', (req, res) => {
     const {userid} = req.cookies;
     if (!userid) {
