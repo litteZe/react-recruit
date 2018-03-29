@@ -31,7 +31,7 @@ export default class Chat extends Component {
                 .recvMsg();
         }
     }
-    componentDidUnmount() {
+    componentWillUnmount() {
         // 标记已读
         const to = this.props.match.params.user;
         this.props.readMsg(to);
