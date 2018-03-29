@@ -123,6 +123,25 @@ Router.get('/getmsglist', (req, res) => {
     });
 });
 
+Router.post('/readmsg', (req, res) => {
+    const {userid} = req.cookies;
+    const {from} = req.body;
+    Chat.update({
+        from,
+        to: userid
+    }, {
+        '$set': {
+            read: true
+        }
+    }, {
+        'multi': true
+    }, (err, doc) => {
+        if (!err) 
+            return res.json({code: 0, num: doc.nModified});
+        return res.json({code: 1, msg: '修改失败'});
+    })
+});
+
 function md5Pwd(pwd) {
     const salt = 'Iama handsome boy@x86_64123456lu;j.;lk;jlhk';
     return utils.md5(utils.md5(pwd + salt));

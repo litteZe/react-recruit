@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {InputItem, List, NavBar, Icon, Grid} from 'antd-mobile';
-import {getMsgList, sendMsg, recvMsg} from '@/redux/chat.redux';
+import {getMsgList, sendMsg, recvMsg, readMsg} from '@/redux/chat.redux';
 import {getChatId} from '@/util';
 // const socket = io('ws://localhost:9093');
 const {Item} = List;
@@ -11,7 +11,7 @@ const emojiArr = emojis
     .split(' ')
     .filter(v => v !== ' ')
     .map(v => ({text: v}));
-@connect(state => state, {getMsgList, sendMsg, recvMsg})
+@connect(state => state, {getMsgList, sendMsg, recvMsg, readMsg})
 export default class Chat extends Component {
     constructor(props) {
         super(props);
@@ -30,6 +30,11 @@ export default class Chat extends Component {
                 .props
                 .recvMsg();
         }
+    }
+    componentDidUnmount() {
+        // 标记已读
+        const to = this.props.match.params.user;
+        this.props.readMsg(to);
     }
     fixCarouselBug() {
         setTimeout(() => {

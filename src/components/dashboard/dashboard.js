@@ -5,12 +5,9 @@ import {NavBar} from 'antd-mobile';
 import NavLinkBar from '@/components/nav-link-bar/nav-link-bar';
 import BOSS from '@/components/boss/boss';
 import Genius from '@/components/genius/genius';
+import Msg from '@/components/msg/msg';
 import Profile from '@/components/profile/profile';
 import {getMsgList, sendMsg, recvMsg} from '@/redux/chat.redux';
-
-function Msg() {
-    return <h1>消息</h1>
-}
 
 @connect(state => state, {getMsgList, sendMsg, recvMsg})
 export default class Dashboard extends Component {

@@ -42,7 +42,17 @@ export function chat(state = initState, action) {
                 unread: state.unread + n
             };
         case MSG_READ:
-            return state;
+            const {from, num} = action.payload;
+            return {
+                ...state,
+                chatmsg: state
+                    .chatmsg
+                    .map(v => ({
+                        ...v,
+                        read: v.read || from === v.from
+                    })),
+                unread: state.unread - num
+            };
         default:
             return state;
     }
@@ -60,6 +70,16 @@ function msgList(msgs, users, userid) {
 }
 function msgRecv(msg, userid) {
     return {type: MSG_RECV, payload: msg, userid};
+}
+function msgRead({from, userid, num}) {
+    return {
+        type: MSG_READ,
+        payload: {
+            from,
+            userid,
+            num
+        }
+    };
 }
 
 // 异步action
@@ -87,5 +107,19 @@ export function recvMsg() {
 export function sendMsg({from, to, msg}) {
     return dispatch => {
         socket.emit('sendmsg', {from, to, msg});
+    }
+}
+
+export function readMsg(from) {
+    return (dispatch, getState) => {
+        axios
+            .post('/user/readmsg', {from})
+            .then(res => {
+                //当前登录用户
+                const userid = getState().user._id;
+                if (res.status === 200 & res.data.code === 0) {
+                    dispatch(msgRead({userid, from, num: res.data.num}));
+                }
+            })
     }
 }
