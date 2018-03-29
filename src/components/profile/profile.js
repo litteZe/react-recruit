@@ -2,6 +2,7 @@
  * 个人中心页
  */
 import React, {Component} from 'react';
+import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {
     Button,
@@ -12,23 +13,28 @@ import {
     Modal
 } from 'antd-mobile';
 import browserCookies from 'browser-cookies';
+import {logoutSubmit} from '@/redux/user.redux';
 
 const {Item} = List;
 const {Brief} = Item;
 const {alert} = Modal;
 
-@connect(state => state.user)
+@connect(state => state.user, {logoutSubmit})
 export default class Profile extends Component {
     logout() {
         alert('注销', '确认退出吗?', [
             {
                 text: '取消',
-                onPress: () => {console.log('cancel')}
+                onPress: () => {
+                    console.log('cancel')
+                }
             }, {
                 text: '退出',
                 onPress: () => {
                     browserCookies.erase('userid');
-                    window.location.href = window.location.href
+                    this
+                        .props
+                        .logoutSubmit();
                 }
             }
         ])
@@ -66,6 +72,6 @@ export default class Profile extends Component {
                     </WingBlank>
                 </div>
             )
-            : null;
+            : <Redirect to={props.redirectTo}></Redirect>;
     }
 }

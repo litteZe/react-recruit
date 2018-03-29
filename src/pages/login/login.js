@@ -4,19 +4,11 @@ import {connect} from 'react-redux';
 import {List, InputItem, WingBlank, WhiteSpace, Button} from 'antd-mobile';
 import Logo from '@/components/logo/logo';
 import {login} from '@/redux/user.redux';
+import ImoocForm from '@/components/imooc-form/imooc-form';
 
 @connect(state => state.user, {login})
+@ImoocForm
 export default class Login extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: '',
-            pwd: ''
-        };
-    }
-    handleChange(key, value) {
-        this.setState({[key]: value});
-    }
     register() {
         this
             .props
@@ -26,27 +18,24 @@ export default class Login extends Component {
     handleLogin() {
         this
             .props
-            .login(this.state);
+            .login(this.props.state);
     }
     render() {
         return (
             <div>
-                {this.props.redirectTo
+                {this.props.redirectTo&& this.props.redirectTo!=='/login'
                     ? <Redirect to={this.props.redirectTo}></Redirect>
                     : null}
                 <Logo></Logo>
-                <h2 style={{
-                    "textAlign": "center"
-                }}>我是登录页</h2>
                 {this.props.msg
                     ? <p className="error-msg">{this.props.msg}</p>
                     : null}
                 <WingBlank>
                     <List>
-                        <InputItem onChange={v => this.handleChange('user', v)}>用户名</InputItem>
-                        <InputItem type="password" onChange={v => this.handleChange('pwd', v)}>密码</InputItem>
+                        <InputItem onChange={v => this.props.handleChange('user', v)}>用户名</InputItem>
+                        <InputItem type="password" onChange={v => this.props.handleChange('pwd', v)}>密码</InputItem>
                     </List>
-                    <WhiteSpace/>
+                    <WhiteSpace size="lg"/>
                     <Button
                         onClick={this
                         .handleLogin

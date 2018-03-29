@@ -4,6 +4,7 @@ const utils = require('utility');
 const models = require('./model');
 
 const User = models.getModel('user');
+const Chat = models.getModel('chat');
 
 const _filter = {
     'pwd': 0,
@@ -92,6 +93,33 @@ Router.get('/info', (req, res) => {
             return res.json({code: 1, msg: '后端出错'});
         }
         return res.json({code: 0, data: doc});
+    });
+});
+
+Router.get('/getmsglist', (req, res) => {
+    const {userid} = req.cookies;
+    // {'$or':[{from: user,to: user}]}
+    User.find({}, (err, userdoc) => {
+        let users = {};
+        userdoc.forEach(v => {
+            users[v._id] = {
+                name: v.user,
+                avatar: v.avatar
+            }
+        });
+        Chat.find({
+            '$or': [
+                {
+                    from: userid
+                }, {
+                    to: userid
+                }
+            ]
+        }, (err, doc) => {
+            if (!err) {
+                return res.json({code: 0, msgs: doc, users: users});
+            }
+        });
     });
 });
 
